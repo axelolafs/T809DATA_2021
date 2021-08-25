@@ -11,7 +11,18 @@ def prior(targets: np.ndarray, classes: list) -> np.ndarray:
     Calculate the prior probability of each class type
     given a list of all targets and all class types
     '''
-    ...
+    N = len(targets)
+    estimate = np.zeros(len(classes))
+    i = 0
+    for class_ in classes:
+        j = 0
+        for target in targets:
+            if (target == class_):
+                j += 1
+        estimate[i] = j / N
+        i += 1
+    
+    return estimate
 
 
 def split_data(
@@ -132,3 +143,13 @@ class IrisTreeTrainer:
 
     def confusion_matrix(self):
         ...
+
+
+print(prior([0, 0, 1], [0, 1]))
+print(prior([0, 2, 3, 3], [0, 1, 2, 3]))
+# arr = [2, 3, 4, 5, 3, 4, 5, 3, 5, 4, 7, 8, 3, 6, 2]
+# print('Numpy Array:')
+# print(arr)
+# # Count occurrence of element '3' in numpy array
+# count = (arr == 3).sum()
+# print('Total occurences of "3" in array: ', count)
