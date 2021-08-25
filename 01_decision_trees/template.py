@@ -2,6 +2,7 @@ from typing import Union
 import matplotlib.pyplot as plt
 import numpy as np
 from sklearn.tree import DecisionTreeClassifier, plot_tree
+from sklearn.metrics import accuracy_score
 
 from tools import load_iris, split_train_test
 
@@ -158,25 +159,37 @@ class IrisTreeTrainer:
         self.tree = DecisionTreeClassifier()
 
     def train(self):
-        return self.tree.fit(self.train_features,self.train_targets)
+        return self.tree.fit(self.train_features, self.train_targets)
 
     def accuracy(self):
-        ...
+        pred = self.tree.predict(self.test_features)
+        return accuracy_score(self.test_targets, pred)
 
     def plot(self):
-        ...
-
-    def plot_progress(self):
-        # Independent section
-        # Remove this method if you don't go for independent section.
-        ...
+        plot_tree(self.tree)
+        plt.show()
 
     def guess(self):
-        ...
+        pred = self.tree.predict(self.test_features)
+        return pred
 
     def confusion_matrix(self):
-        ...
-
+        n = len(self.classes)
+        matrix = np.zeros((n, n))
+        N = len(self.test_targets)
+        guessVector = self.guess()
+        
+        for k in range(N):
+            i = self.test_targets[k]
+            j = guessVector[k]
+            matrix[i][j] += 1
+        return matrix
 
 features, targets, classes = load_iris()
-print(brute_best_split(features, targets, classes, 30))
+dt = IrisTreeTrainer(features, targets, classes=classes)
+dt.train()
+print(f'The accuracy is: {dt.accuracy()}')
+dt.plot()
+print(f'I guessed: {dt.guess()}')
+print(f'The true targets are: {dt.test_targets}')
+print(dt.confusion_matrix())
